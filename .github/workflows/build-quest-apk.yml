@@ -2,7 +2,8 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
-  pull_request: branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -20,6 +21,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x gradlew
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
