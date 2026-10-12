@@ -1,4 +1,5 @@
-name: Build Android APK
+name: Build Quest VR APK
+
 on:
   push:
     branches: [ main ]
@@ -6,30 +7,30 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    name: Build APK
+  buildForAndroid:
+    name: Build for Android 🤖
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          lfs: true
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Cache library folder
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-Android
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x gradlew
-
-      - name: Build debug APK
-        run: ./gradlew assembleDebug
+      - name: Build Unity Project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: Android
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: Quest-VR-Build
+          path: build/Android
